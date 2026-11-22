@@ -26,7 +26,7 @@ URL = os.environ.get("WARROOM_URL", "https://warroom-x7d1691fvb.agent37.app/")
 
 # name -> (css selector of candidate elements, text the element must contain)
 TARGETS = {
-    "ui_kill_traversal": ("#feed .ev", "rekha_crossing"),
+    "ui_kill_traversal": ("#feed .ev", "path 'public/../internal/payroll.csv' is behind"),
     "ui_kill_decoy": ("#feed .ev", "honeytoken_touch"),
     "ui_closure": ("#feed .ev", "CLOSURE"),
     "ui_flat": ("#feed .ev", "FEEDBACK FLAT"),
@@ -34,6 +34,7 @@ TARGETS = {
     "ui_released_payment": ("#feed .ev", "PRINCIPAL RELEASED"),
     "ui_rejected_payment": ("#feed .ev", "PRINCIPAL REJECTED"),
     "ui_held_offshore": ("#feed .ev", "Offshore"),
+    "ui_held_diya": ("#feed .ev", "HELD payment.send {\"to\":\"Diya Lamps"),
     "ui_lie": ("#feed .ev", "SAY"),
     "ui_room_mismatch": ("#room .msg", "KEY_AGENT_MISMATCH"),
     "ui_room_unsigned": ("#room .msg", "UNSIGNED"),
