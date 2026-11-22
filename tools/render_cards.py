@@ -20,7 +20,7 @@ CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 ROOT = Path(__file__).resolve().parent.parent
 
 
-async def main(out: Path) -> None:
+async def main(out: Path, html: str = "cards.html", prefix: str = "card_") -> None:
     out.mkdir(parents=True, exist_ok=True)
     port = 9334
     prof = tempfile.mkdtemp(prefix="cards_chrome_")
@@ -48,22 +48,24 @@ async def main(out: Path) -> None:
                     if m.get("id") == my:
                         return m.get("result", {})
 
-            await call("Emulation.setDeviceMetricsOverride", width=1120, height=900, deviceScaleFactor=2, mobile=False)
+            await call("Emulation.setDeviceMetricsOverride", width=1960, height=1200, deviceScaleFactor=2, mobile=False)
             await call("Page.enable")
-            await call("Page.navigate", url=(ROOT / "video" / "cards" / "cards.html").as_uri())
+            await call("Page.navigate", url=(ROOT / "video" / "cards" / html).as_uri())
             await asyncio.sleep(3)
             await call("Runtime.evaluate", expression="document.fonts.ready.then(()=>1)", awaitPromise=True)
             r = await call("Runtime.evaluate", returnByValue=True, expression=(
-                "JSON.stringify([...document.querySelectorAll('section.card')].map(s=>{const b=s.getBoundingClientRect();"
+                "JSON.stringify([...document.querySelectorAll('section[id]')].map(s=>{const b=s.getBoundingClientRect();"
                 "return {id:s.id,x:b.left+scrollX,y:b.top+scrollY,w:b.width,h:b.height}}))"))
             for c in json.loads(r["result"]["value"]):
                 shot = await call("Page.captureScreenshot", format="png", captureBeyondViewport=True,
                                   clip={"x": c["x"], "y": c["y"], "width": c["w"], "height": c["h"], "scale": 1})
-                (out / f"card_{c['id']}.png").write_bytes(base64.b64decode(shot["data"]))
+                (out / f"{prefix}{c['id']}.png").write_bytes(base64.b64decode(shot["data"]))
                 print("card", c["id"])
     finally:
         chrome.kill()
 
 
 if __name__ == "__main__":
-    asyncio.run(main(Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "video" / "assets3"))
+    a = sys.argv[1:]
+    asyncio.run(main(Path(a[0]) if a else ROOT / "video" / "assets3",
+                     a[1] if len(a) > 1 else "cards.html", a[2] if len(a) > 2 else "card_"))
