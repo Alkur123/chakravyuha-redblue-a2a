@@ -22,7 +22,7 @@ agent cannot get out to your files, your money or your other agents. Each ring i
 | one gate for every action | every tool call is checked before it runs (allow, deny, hold, or end the session) |
 | boundary lines | declared places an agent may never go (e.g. `internal/`); one crossing ends the session |
 | decoy credentials | planted fake secrets no honest task needs; one touch ends the session |
-| human approval | irreversible actions (payments, exports) wait for an approver |
+| human approval | irreversible actions (payments, exports) wait for an approver (in the automated runs a stand-in rule decides; `--human` puts a real person in the BAND room) |
 
 **The proof: a live fight.** Two AI agents in a real **BAND** chat room:
 
@@ -47,8 +47,26 @@ agent cannot get out to your files, your money or your other agents. Each ring i
 8. Red reports "I read one invoice, nothing else." Aegis compares that with its own log: Red also read a second
    invoice and made a payment it never mentioned. Caught.
 
-**Result:** 12 of 12 attacks stopped, 0 of 7 honest tasks blocked, audit log intact. Our own test set: a demonstration,
+**Result:** with Blue's rules in place, each attack in its own fresh session: 12 of 12 attacks stopped, 0 of 7 honest tasks blocked, audit log intact. Our own test set: a demonstration,
 not a benchmark (limits below).
+
+**Names used further down.**
+
+| name | plain meaning |
+|---|---|
+| arm | one of the checks inside the gate |
+| Ring 12 | Aegis's per-step checker: boundary lines, decoys, drift from the declared task |
+| Ring 13 | Aegis's tool and egress check: undeclared tools and destinations are denied |
+| Mandala | Aegis's message-signature check (rejects UNSIGNED, KEY_AGENT_MISMATCH, REPLAY) |
+| honeytoken | a planted decoy credential |
+| principal | the approver (a person, or the stand-in rule in automated runs) |
+| off-axis hold | irreversible actions parked until the principal decides |
+| reinforcement closure | no new helpers or sessions once a session is suspect |
+| gradient withholding | after repeated denials, every answer looks the same, so probing teaches nothing |
+
+**Sponsors, one line each:** **BAND**: the agents' chat room · **AdaL**: an AI coding agent that patched the bug (and made the
+film), every step gated by Aegis · **Lyzr**: a hosted remediation analyst that writes Blue's fix · **Finch**: a skill market
+Blue searches to cite a matching remediation skill · **Agent37**: hosts the live demo and the Aegis API.
 
 > **Band routes. Aegis decides.** BAND's own docs describe in-room approval as "an instruction to the model, not a
 > deterministic authorization check." Aegis adds the deterministic part.
@@ -64,12 +82,8 @@ skill, and the measured table fills in. One run takes about two minutes.
 ## Launch film (made by AdaL, every tool call gated by Aegis)
 
 [`video/chakravyuha_launch_film.mp4`](video/chakravyuha_launch_film.mp4) · 1:44, 1080p, music only (for speaking over).
-It explains the idea first (the problem, Aegis in one sentence, the Chakravyuha and why we turned it around, the cast),
-then shows eight steps of a real hosted run. Each step pairs one plain sentence with the product's own UI from that run,
-captured from the live war room (`tools/capture_proofs.py`), plus 8 seconds of the war room running. AdaL made it under
-the Aegis gate: 96 tool calls, 0 denied (`evidence/adal_video_v6_decisions.jsonl`). Checked second by second
-(`tools/qa_video.py`), and tested on blind reviewers who saw only the frames: clarity went from 5/10 (v3) to 7/10 (v4, v5),
-and each round's findings were fixed in the next cut.
+It explains the idea first, then shows eight steps of a real hosted run, each with the product's own UI from that run.
+AdaL made it under the Aegis gate: 69 tool calls in the final render, 0 denied (`evidence/adal_video_v7_decisions.jsonl`).
 
 Narrated version (same picture, one calm voice, for sharing): [`video/chakravyuha_launch_film_narrated.mp4`](video/chakravyuha_launch_film_narrated.mp4), from the same gated job.
 

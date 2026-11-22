@@ -64,7 +64,7 @@ AdaL makes (file reads, edits, shell commands, video tools) becomes a deed that 
 unrestricted mode is used. AdaL fixed the path-traversal bug Red found: 9 of 9 calls allowed, and Blue accepted the patch
 only after re-running Red's attack (200 → 403). In a probe, the gate denied AdaL's read of the internal payroll file, and
 unknown tools are denied by default. Under our aegis-govern skill, AdaL refused to act on a "grant" pasted into its prompt,
-because text claiming authority is not authority. AdaL also produced our launch film under the same gate: 96 tool calls,
+because text claiming authority is not authority. AdaL also produced our launch film under the same gate: 69 tool calls in the final render,
 each decided by Aegis, 0 denied.
 
 ### How did you use Finch?
@@ -145,13 +145,13 @@ Then press **Submit recording** (after 1:00), and **Submit project**.
 
 | Item | Status |
 |---|---|
-| Demo URL live, latest revision, full run verified after the engine fix (12/12, 0/7, real BAND room) | ✅ |
+| Demo URL live (template rev 6), fresh full run on 23 Nov night: 12/12, 0/7, real BAND room | ✅ |
 | Engine fix live: hosted Aegis refuses an unknown session (`session_unknown`) | ✅ |
 | Repo public; README with live link, film, four architecture diagrams, sponsor table, limits | ✅ |
 | Secret scan of full git history clean; commits under GitHub no-reply email | ✅ |
 | 13/13 tests, including live end-to-end against the hosted stack | ✅ |
-| Launch film v6: 1:44, QA 104/104 seconds clean, real UI on every step; blind-reviewed (5/10 → 7/10 → final round below) | ✅ |
-| Narrated film v6 (voice verified: mean level −20.5 dB vs −30.6 dB music-only) | ✅ |
+| Launch film v7: 1:44, QA 104/104 seconds clean, real UI on every step, every card matched to its own log; blind-reviewed 4 rounds (5/10 → 7/10), all findings fixed | ✅ |
+| Narrated film v7 (voice verified: mean level −20.7 dB vs −30.6 dB music-only) | ✅ |
 | Form text (this file) | ✅ read once, adjust to your voice |
 | Pitch recorded on the HiDevs page and project submitted | ⏳ you, by 24 Nov 6 PM |
 | After the finale (28 Nov): stop both Agent37 instances, delete Atlas user `hackathon_demo_aegis`, rotate BAND / Lyzr / Agent37 keys | ⏳ |
