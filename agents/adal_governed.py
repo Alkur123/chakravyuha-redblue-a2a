@@ -11,7 +11,7 @@ AdaL sees the reason.
     python -m agents.adal_governed patch   # fix the traversal in a workspace copy
     python -m agents.adal_governed video   # make the demo video from video/ADAL_VIDEO_BRIEF.md
 
-Needs: `pip install git+https://github.com/SylphAI-Inc/adal-sdk.git` and a
+Needs: `pip install -r requirements-adal.txt` and a
 signed-in AdaL CLI. Gate: AEGIS_BASE_URL / AEGIS_API_KEY (hosted or local).
 Every decision is written to evidence/adal_<job>_decisions.jsonl.
 """
@@ -40,6 +40,25 @@ TOOL_MAP = {
     "edit_file": ("file.edit", "WRITE"), "create_file": ("file.edit", "WRITE"),
     "bash": ("shell.run", "COMPUTE"),
     "load_capability": ("capability.load", "COMPUTE"),
+    # AdaL video producer toolkit (names read from the installed AdaL 1.11.15 bundle)
+    "check_video_status": ("media.read", "READ"), "search_voices": ("media.read", "READ"),
+    "preview_voices": ("media.read", "READ"), "preview_captions": ("media.read", "READ"),
+    "media_preview": ("media.read", "READ"), "read_cut": ("media.read", "READ"),
+    "video_project": ("media.edit", "WRITE"), "assets": ("media.edit", "WRITE"),
+    "render_scene": ("media.edit", "WRITE"), "render_thumbnail": ("media.edit", "WRITE"),
+    "edit_cut": ("media.edit", "WRITE"), "compose_video": ("media.edit", "WRITE"),
+    "export_video": ("media.edit", "WRITE"), "timeline": ("media.edit", "WRITE"),
+    "generate_video": ("media.generate", "COMPUTE"), "generate_audio": ("media.generate", "COMPUTE"),
+    "generate_image": ("media.generate", "COMPUTE"), "generate_image_in_video_project": ("media.generate", "COMPUTE"),
+    "generate_subtitles": ("media.generate", "COMPUTE"), "voice_change": ("media.generate", "COMPUTE"),
+    "isolate_voice": ("media.generate", "COMPUTE"),
+    "library": ("media.read", "READ"), "read_media": ("media.read", "READ"), "read_image": ("media.read", "READ"),
+    "probe_media": ("media.read", "READ"), "log_footage": ("media.read", "READ"), "extract_frame": ("media.read", "READ"),
+    "import_asset": ("media.edit", "WRITE"), "create_undo_snapshot": ("media.edit", "WRITE"),
+    "list_files": ("file.read", "READ"), "agentic_search": ("file.read", "READ"),
+    "replace_range": ("file.edit", "WRITE"), "run_script": ("shell.run", "COMPUTE"),
+    # Deliberately NOT mapped (denied: undeclared): spawn_subagent (no reinforcements, the
+    # same closure rule Red gets), fetch_url / web_search (network), schedule_* (persistence).
     "web_search": ("web.fetch", "NETWORK"), "web_fetch": ("web.fetch", "NETWORK"),
 }
 
@@ -70,7 +89,8 @@ JOBS: Dict[str, Dict[str, Any]] = {
     },
     "video": {
         "goal": "make a demo video of this project from video/ADAL_VIDEO_BRIEF.md and video/assets",
-        "tools": ["file.read", "file.edit", "shell.run", "media.generate", "capability.load"],
+        "tools": ["file.read", "file.edit", "shell.run", "media.generate", "media.edit", "media.read",
+                  "capability.load"],
         "classes": ["READ", "WRITE", "COMPUTE"],
         "rekha": {"forbid_paths": ["internal", ".env", "~/.ssh", "~/.adal/adal_oauth_creds.json"],
                   "forbid_classes": ["NETWORK"]},
@@ -111,6 +131,22 @@ class AegisGate:
         else:
             tool, cls = name, "SYSTEM"
         args = {k: v for k, v in (tool_input or {}).items() if isinstance(v, (str, int, float, bool))}
+        nested: list = []
+
+        def _walk(v):
+            if isinstance(v, str):
+                nested.append(v[:500])
+            elif isinstance(v, dict):
+                for x in v.values():
+                    _walk(x)
+            elif isinstance(v, (list, tuple)):
+                for x in v:
+                    _walk(x)
+        for k, v in (tool_input or {}).items():
+            if isinstance(v, (dict, list, tuple)):
+                _walk(v)
+        if nested:  # paths inside lists/dicts still reach the boundary check
+            args["values"] = nested[:50]
         for k in ("file_path", "path", "filename"):
             if k in args:
                 args["path"] = args.pop(k)
@@ -130,14 +166,16 @@ class AegisGate:
             ok = (not d.killed) and e.get("action") == "ALLOW"
             reason = d.reason if d.killed else (e.get("reason") or d.reason or "allowed")
             hard = d.hard_block
+            r12_detail = f"r12={d.decision}: {d.reason}"[:300]
         except Exception as ex:  # silence is not a pass
             ok, reason, hard = False, f"gate unavailable: {str(ex)[:120]}", "liveness"
+            r12_detail = ""
         verdict = "ALLOW" if ok else "DENY"
         self.counts[verdict] += 1
         with self.log.open("a", encoding="utf-8") as f:
             f.write(json.dumps({"t": round(time.time(), 2), "adal_tool": tool_name, "deed": tool, "class": cls,
-                                "args": {k: str(v)[:200] for k, v in args.items()}, "verdict": verdict,
-                                "hard_block": hard, "reason": str(reason)[:240]}) + "\n")
+                                "args": {k: str(v)[:300] for k, v in args.items()}, "verdict": verdict,
+                                "hard_block": hard, "reason": str(reason)[:240], "r12": r12_detail}) + "\n")
         print(f"  [gate] {verdict:5} {tool_name:<18} {str(args)[:90]}", flush=True)
         if ok:
             return PermissionResult.allow()

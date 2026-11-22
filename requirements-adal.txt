@@ -1,0 +1,4 @@
+# Only for agents/adal_governed.py and tools/aegis_gate_mcp.py (not needed by the war room)
+-r requirements.txt
+mcp==1.30.0
+adal-agent-sdk @ git+https://github.com/SylphAI-Inc/adal-sdk.git
