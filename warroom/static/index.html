@@ -108,7 +108,7 @@ th{color:var(--dim);font-weight:600}
   <div class="panel">
     <h2>Sponsor stack, as used in this run</h2>
     <div class="sponsors" id="sp">
-      <span data-s="band">BAND: the room</span><span data-s="lyzr">Lyzr: analyst + RAI</span>
+      <span data-s="band">BAND: the room</span><span data-s="lyzr">Lyzr: remediation analyst</span>
       <span data-s="finch">Finch: skill search</span><span data-s="agent37">Agent37: hosting</span>
       <span data-s="adal">AdaL: governed patch agent</span>
     </div>
@@ -190,7 +190,8 @@ document.querySelector('[data-s="agent37"]').classList.toggle("live",location.ho
 loadLast();
 // replay whatever has already happened (a judge opening the link mid-run or after it)
 (async()=>{const j=await (await fetch("/api/events?since=0")).json();
-  for(const e of j.events){since=e.seq;handle(e);}
+  const upto=Number(new URLSearchParams(location.search).get("act")||0);
+  for(const e of j.events){if(upto&&e.kind==="act"&&e.n>upto)break;since=e.seq;handle(e);}
   if(j.running){$("run").disabled=$("story").disabled=true;timer=setInterval(poll,400);}})();
 </script>
 </body>
