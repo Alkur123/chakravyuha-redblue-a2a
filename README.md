@@ -23,6 +23,14 @@ Diwali Festiverse A2A Hackathon (India Edition), Security track: Red finds weakn
 talk in a real BAND room, every deed goes through a hosted Aegis gate (on Agent37), Lyzr writes the fix, Finch cites a
 skill, and the measured table fills in. One run takes about two minutes.
 
+## Demo video (made by AdaL, every tool call gated by Aegis)
+
+[`video/chakravyuha_demo.mp4`](video/chakravyuha_demo.mp4) · 75 s, 1080p, narrated. AdaL produced it from our
+real war-room screenshots; all 73 of its tool calls went through the Aegis gate (0 denied in that run;
+earlier runs were stopped by the gate on undeclared tools). Gate log: `evidence/adal_video_render_decisions.jsonl`.
+
+![contact sheet](video/contact_sheet.png)
+
 ## What you will see (the war room)
 
 `python run_demo.py`, or the **Run the formation** button on the war-room page.

@@ -46,7 +46,7 @@ Aegis gate. No unrestricted mode is used. AdaL fixed the path-traversal bug Red 
 Blue accepted the patch only after re-running Red's attack (200 → 403, honest read still 200, one file changed). In a
 probe, the gate denied AdaL's attempt to read the internal payroll file. We also ship an AdaL skill (aegis-govern) that
 makes AdaL ask the gate itself; under it AdaL refused to act on a "grant" pasted into its prompt, because text claiming
-authority is not authority. AdaL also produced our demo video, under the same gate.
+authority is not authority. AdaL also produced our 75-second demo video (in the repo), under the same gate: 73 tool calls, each one allowed by Aegis before it ran.
 
 ### How did you use Finch?
 
