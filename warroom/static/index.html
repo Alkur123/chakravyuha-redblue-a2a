@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chakravyuha War Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f1a; --panel:#121829; --line:#24304d; --ink:#e8ecf6; --dim:#8a96b3;
+  --gold:#f5a524; --red:#ff5d5d; --blue:#5ea8ff; --green:#3ddc97; --violet:#b48cff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:20px;font-weight:800;letter-spacing:.2px}
+h1 small{display:block;font-weight:400;color:var(--dim);font-size:13px;margin-top:2px}
+.btn{background:var(--gold);color:#1b1200;border:0;border-radius:8px;padding:10px 16px;font-weight:800;cursor:pointer}
+.btn[disabled]{opacity:.5;cursor:wait}
+.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+main{display:grid;grid-template-columns:minmax(300px,420px) 1fr 1fr;gap:14px;padding:14px 20px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+.panel h2{margin:0 0 10px;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim)}
+#act{font-weight:600;color:var(--gold);min-height:22px;margin-bottom:8px}
+svg text{font-family:Inter,sans-serif}
+.ring{fill:none;stroke:var(--line);stroke-width:14;transition:stroke .3s}
+.ring.on{stroke:var(--gold)} .ring.kill{stroke:var(--red)} .ring.hold{stroke:var(--violet)}
+.legend{display:grid;grid-template-columns:1fr;gap:4px;font-size:12px;color:var(--dim);margin-top:8px}
+.legend b{color:var(--ink)}
+.feed{font:12px/1.5 "JetBrains Mono",monospace;max-height:62vh;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.ev{border-left:3px solid var(--line);padding:4px 8px;background:#0e1424;border-radius:4px;word-break:break-word}
+.ev .k{font-weight:600}
+.ALLOW{border-color:var(--green)} .KILL{border-color:var(--red)} .DENY{border-color:#ff9f43} .HOLD{border-color:var(--violet)}
+.audit{border-color:var(--blue)} .actrow{border-color:var(--gold);color:var(--gold);font-family:Inter;font-weight:600}
+.msg{padding:6px 8px;border-radius:8px;max-width:92%}
+.msg.red{background:#2a1416;align-self:flex-start;border:1px solid #4a2023}
+.msg.blue{background:#121f36;align-self:flex-end;border:1px solid #20365e}
+.msg .who{font-size:11px;color:var(--dim)}
+.tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:99px;margin-left:6px;background:#2b3553}
+.tag.bad{background:#5a1f22;color:#ffb3b3} .tag.ok{background:#173a2c;color:#9ff0c9}
+#bottom{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 20px 20px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--dim);font-weight:600}
+.big{font-size:28px;font-weight:800}
+.stats{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:10px}
+.sponsors{display:flex;flex-wrap:wrap;gap:8px;font-size:12px}
+.sponsors span{border:1px solid var(--line);border-radius:99px;padding:3px 10px;color:var(--dim)}
+.sponsors span.live{color:var(--ink);border-color:var(--gold)}
+@media (max-width:1100px){main{grid-template-columns:1fr}#bottom{grid-template-columns:1fr}}
+@media (max-width:600px){main,#bottom,header{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Chakravyuha War Room<small>Abhimanyu reversed: the attacker gets in, and cannot get out. Band routes. Aegis decides.</small></h1>
+  <div>
+    <button class="btn" id="run">Run the formation</button>
+    <button class="btn ghost" id="story">Story only</button>
+  </div>
+</header>
+<main>
+  <section class="panel">
+    <h2>The formation</h2>
+    <div id="act">Press run.</div>
+    <svg viewBox="0 0 320 320" width="100%" role="img" aria-label="Formation rings">
+      <circle id="r-audit" class="ring" cx="160" cy="160" r="148" stroke-dasharray="6 6"/>
+      <circle id="r-L1" class="ring" cx="160" cy="160" r="124"/>
+      <circle id="r-L2" class="ring" cx="160" cy="160" r="100"/>
+      <circle id="r-L3" class="ring" cx="160" cy="160" r="76"/>
+      <circle id="r-L4" class="ring" cx="160" cy="160" r="52"/>
+      <circle id="core" cx="160" cy="160" r="30" fill="#1a2238" stroke="var(--line)"/>
+      <text x="160" y="157" text-anchor="middle" fill="var(--dim)" font-size="9">protected</text>
+      <text x="160" y="169" text-anchor="middle" fill="var(--dim)" font-size="9">asset</text>
+      <rect id="closure" x="146" y="2" width="28" height="30" rx="4" fill="#1a2238" stroke="var(--line)"/>
+      <text x="160" y="22" text-anchor="middle" fill="var(--dim)" font-size="8">gate</text>
+      <circle id="redDot" cx="160" cy="-20" r="7" fill="var(--red)"/>
+    </svg>
+    <div class="legend">
+      <div><b>Gate</b>: the single entrance; closure shuts it to reinforcements</div>
+      <div><b>L1</b>: deed vetoes: declared tools, boundary lines, decoy credentials</div>
+      <div><b>L2</b>: language-model review (Lyzr); can only add a stop</div>
+      <div><b>L3</b>: trajectory and depth; convergence on the penetrator</div>
+      <div><b>L4</b>: irreversible deeds held for the principal</div>
+      <div><b>Outer, dashed</b>: audit: signatures, unwithdrawable alarms, record checks, vault</div>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>BAND room: Red ↔ Blue</h2>
+    <div class="feed" id="room"></div>
+  </section>
+  <section class="panel">
+    <h2>Every deed, every verdict</h2>
+    <div class="feed" id="feed"></div>
+  </section>
+</main>
+<section id="bottom">
+  <div class="panel">
+    <h2>Measured on this run</h2>
+    <div class="stats">
+      <div><div class="big" id="att">-</div><div>attacks stopped</div></div>
+      <div><div class="big" id="ben">-</div><div>benign tasks blocked</div></div>
+      <div><div class="big" id="vault">-</div><div>audit vault</div></div>
+    </div>
+    <table id="tbl"><thead><tr><th>playbook</th><th>kind</th><th>verdicts</th><th>arm</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="panel">
+    <h2>Sponsor stack, as used in this run</h2>
+    <div class="sponsors" id="sp">
+      <span data-s="band">BAND: the room</span><span data-s="lyzr">Lyzr: analyst + RAI</span>
+      <span data-s="finch">Finch: skill search</span><span data-s="agent37">Agent37: hosting</span>
+      <span data-s="adal">AdaL: governed patch agent</span>
+    </div>
+    <h2 style="margin-top:16px">Hardening Blue applied</h2>
+    <div class="feed" id="hard"></div>
+  </div>
+</section>
+<script>
+const $=id=>document.getElementById(id);
+let since=0, timer=null, depth={};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function light(id,cls){const e=$(id);if(!e)return;e.classList.remove("on","kill","hold");e.classList.add(cls);}
+function moveRed(d){const r=Math.max(40,170-d*22);const dot=$("redDot");dot.setAttribute("cx",160);dot.setAttribute("cy",160-r);}
+function row(html,cls){const d=document.createElement("div");d.className="ev "+(cls||"");d.innerHTML=html;$("feed").prepend(d);}
+function msg(side,who,text,tag){const d=document.createElement("div");d.className="msg "+side;
+  d.innerHTML=`<div class="who">${esc(who)}${tag||""}</div>${esc(text)}`;$("room").append(d);$("room").scrollTop=1e9;}
+function armRing(arm,v){
+  if(!arm)return;
+  if(arm==="closure"){$("closure").setAttribute("fill","#5a1f22");return;}
+  if(arm.startsWith("ring12")&&v==="KILL"){light("r-L1","kill");return;}
+  if(arm==="ring13"){light("r-L1","on");light("r-L3","on");return;}
+  if(arm==="lyzr"){light("r-L2","on");return;}
+  if(arm==="hold"){light("r-L4","hold");return;}
+  if(arm==="withholding"||arm==="convergence"){light("r-L3","on");return;}
+}
+function handle(e){
+  switch(e.kind){
+    case "act": $("act").textContent=`Act ${e.n}: ${e.title}`;
+      row(`Act ${e.n}: ${esc(e.title)}`,"actrow");
+      ["r-L1","r-L2","r-L3","r-L4","r-audit"].forEach(i=>$(i).classList.remove("on","kill","hold"));
+      $("closure").setAttribute("fill","#1a2238");break;
+    case "verdict": row(`<span class="k">${e.verdict}</span> ${esc(e.tool)} · ${esc(e.arm)}<br>${esc(e.reason).slice(0,160)}${
+        e.shown_to_red&&e.shown_to_red.verdict!==e.verdict?`<br><i>Red was shown: ${esc(e.shown_to_red.verdict)}</i>`:""}`,e.verdict);
+      armRing(e.arm,e.verdict);break;
+    case "depth": depth[e.session]=e.depth;moveRed(e.depth);break;
+    case "convergence": row(`<span class="k">CONVERGENCE</span> depth ${e.depth}: every arm on every step`,"KILL");light("r-L3","kill");break;
+    case "room_out": msg("red","Red → @blue",e.text,e.claimed&&e.claimed!=="red"?`<span class="tag bad">claims: ${esc(e.claimed)}</span>`:(e.signed?"":`<span class="tag bad">unsigned</span>`));break;
+    case "room_in": msg("blue","Aegis check on Red's message",e.verified?"verified signature":"rejected",
+        `<span class="tag ${e.verified?"ok":"bad"}">${esc(e.reason_code)}</span>`);if(!e.verified)light("r-audit","kill");break;
+    case "withdraw_refused": msg("blue","Blue","Alarm stays open: only the principal or a system event closes it.","<span class='tag bad'>withdrawal refused</span>");light("r-audit","on");break;
+    case "standdown_refused": row(`<span class="k">STAND-DOWN REFUSED</span> ${esc(e.rule)}`,"audit");break;
+    case "closure_denied": row(`<span class="k">CLOSURE</span> ${esc(e.tool)}: ${esc(e.rule)}`,"DENY");$("closure").setAttribute("fill","#5a1f22");break;
+    case "feedback_flattened": row(`<span class="k">FEEDBACK FLAT</span> ${esc(e.why)}: Red now gets one identical HOLD`,"HOLD");break;
+    case "held": row(`<span class="k">HELD</span> ${esc(e.tool)} ${esc(JSON.stringify(e.args))}: waits for the principal`,"HOLD");light("r-L4","hold");break;
+    case "hold_decided": row(`<span class="k">PRINCIPAL</span> ${esc(e.state)} hold ${esc(e.hold)}`,e.state==="RELEASED"?"ALLOW":"KILL");break;
+    case "reconciled": if(e.discrepancies&&e.discrepancies.length){row(`<span class="k">SAY ≠ DO</span> ${e.discrepancies.length} discrepancies: ${esc(e.discrepancies.map(d=>d.detail).join("; ")).slice(0,220)}`,"audit");light("r-audit","on");}break;
+    case "hardened": { const d=document.createElement("div");d.className="ev audit";
+      d.innerHTML=`<b>${esc(e.finding)}</b><br>rule: ${esc(JSON.stringify(e.rule))}${e.finch_skill?`<br>Finch skill: ${esc(e.finch_skill.name)}`:""}${e.advice?`<br>Lyzr: ${esc(e.advice).slice(0,240)}`:""}`;
+      $("hard").append(d); msg("blue","Blue → @red","Hardened: "+JSON.stringify(e.rule)+". Re-run your playbook.");break;}
+    case "vault": $("vault").textContent=e.result&&e.result.valid?"INTACT":"CHECK";light("r-audit","on");break;
+    case "sponsor": { const s=document.querySelector(`[data-s="${e.actor}"]`);if(s&&!/not configured|error/.test(e.status))s.classList.add("live");break;}
+    case "run_start": if(e.room==="band")document.querySelector('[data-s="band"]').classList.add("live");break;
+    case "measured": $("att").textContent=`${e.attacks_stopped}/${e.attacks}`;$("ben").textContent=`${e.benign_blocked}/${e.benign}`;loadLast();break;
+    case "run_error": row(`<span class="k">RUN ERROR</span> ${esc(e.error)}`,"KILL");break;
+  }
+}
+async function poll(){
+  try{const r=await fetch(`/api/events?since=${since}`);const j=await r.json();
+    for(const e of j.events){since=e.seq;handle(e);}
+    if(!j.running&&timer){clearInterval(timer);timer=null;$("run").disabled=$("story").disabled=false;}
+  }catch(e){}
+}
+async function loadLast(){
+  try{const j=await (await fetch("/api/last")).json();const m=j.measured;if(!m)return;
+    $("att").textContent=`${m.attacks_stopped}/${m.attacks}`;$("ben").textContent=`${m.benign_blocked}/${m.benign}`;
+    const tb=document.querySelector("#tbl tbody");tb.innerHTML="";
+    for(const r of m.rows){const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${esc(r.playbook)}</td><td>${r.kind}</td><td>${esc(r.verdicts.join(" "))}</td><td>${esc(r.arms[r.arms.length-1])}</td>`;tb.append(tr);}
+  }catch(e){}
+}
+async function start(storyOnly){
+  since=0;["feed","room","hard"].forEach(i=>$(i).innerHTML="");$("vault").textContent="-";moveRed(0);
+  $("run").disabled=$("story").disabled=true;
+  await fetch(`/api/run?story_only=${storyOnly}`,{method:"POST"});
+  timer=setInterval(poll,400);
+}
+$("run").onclick=()=>start(false);$("story").onclick=()=>start(true);
+document.querySelector('[data-s="agent37"]').classList.toggle("live",location.hostname.endsWith("agent37.app"));
+loadLast();
+// replay whatever has already happened (a judge opening the link mid-run or after it)
+(async()=>{const j=await (await fetch("/api/events?since=0")).json();
+  for(const e of j.events){since=e.seq;handle(e);}
+  if(j.running){$("run").disabled=$("story").disabled=true;timer=setInterval(poll,400);}})();
+</script>
+</body>
+</html>
