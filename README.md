@@ -91,8 +91,8 @@ The texts supply the structure. They are not evidence that it works; the table a
 
 | sponsor | use | status |
 |---|---|---|
-| **BAND** | the room: Red, Blue and the human principal; every finding, forged notice and approval is a BAND message; Red's attempt to add a helper uses BAND's add-participant API, which is the call the closure arm blocks | `transport/bus.py` (`BandRoom`); `--band` mode **wiring in progress** |
-| **Lyzr** | Blue's remediation analyst writes the fix for each finding; Lyzr's prompt-injection check is an extra stop that can never lift a veto | `sponsors/lyzr.py`; **key pending** |
+| **BAND** | the room: Red, Blue and the human principal; every finding, forged notice and approval is a BAND message; Red's attempt to add a helper uses BAND's add-participant API, which is the call the closure arm blocks | **live**: `python run_demo.py --band` runs the whole story in a real BAND room (Red, Blue, and the human principal); `tools/band_setup.py` creates the room |
+| **Lyzr** | Blue's remediation analyst writes the fix for each finding; Lyzr's prompt-injection check (when configured) is an extra stop that can never lift a veto | **live**: hosted Lyzr agent "Blue Remediation Analyst" answers every finding with a code fix, a policy rule and a test (cached so rehearsals cost no credits). The Lyzr Responsible-AI check is wired but **not yet configured**, so it adds no stop in the numbers above |
 | **Finch** | read-only skill-market search: Blue cites a matching remediation skill next to each hardening rule | `sponsors/finch.py`, **live** (public search, no wallet) |
 | **Agent37** | hosts the war room (the demo URL) and the Aegis API | `Dockerfile` (`/healthz`); **deploy pending** |
 | **AdaL** | `.adal/skills/aegis-govern/SKILL.md` makes any AdaL (or Claude Code) agent ask the Aegis gate before each action; AdaL patches the target under that skill | skill + `tools/govern.py` **working**; patch run pending |
