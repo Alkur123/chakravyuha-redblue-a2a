@@ -44,13 +44,17 @@ class Red:
 
     # ── deeds ────────────────────────────────────────────────────────────
     async def act(self, sid: str, tool: str, args: dict, thought: str = "",
-                  principal: Callable[[str], bool] | None = None) -> Dict[str, Any]:
+                  principal: "Callable[[str], bool] | str | None" = None) -> Dict[str, Any]:
         v = await self.blue.gate(sid, tool, args, thought)
         rec = {"tool": tool, "args": args, "verdict": v.verdict, "arm": v.arm,
                "reason": v.reason, "result": None,
                "true_arm": (v.detail.get("true") or {}).get("arm", v.arm),
                "true_verdict": (v.detail.get("true") or {}).get("verdict", v.verdict)}
-        if v.verdict == "HOLD" and v.hold_id and principal is not None:
+        if v.verdict == "HOLD" and v.hold_id and principal == "room":
+            approve = await self.blue.ask_principal(v.hold_id, float(__import__("os").environ.get("PRINCIPAL_TIMEOUT", "180")))
+            rec["principal"] = "approved" if approve else "rejected"
+            rec["verdict"] = "ALLOW" if approve else "REJECTED"
+        elif v.verdict == "HOLD" and v.hold_id and principal is not None:
             approve = principal(v.hold_id)
             self.blue.holds.decide(v.hold_id, approve, "principal", "principal")
             rec["principal"] = "approved" if approve else "rejected"

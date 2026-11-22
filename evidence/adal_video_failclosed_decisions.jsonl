@@ -1,0 +1,1 @@
+{"t": 1795362911.09, "adal_tool": "load_capability", "deed": "load_capability", "class": "SYSTEM", "args": {"name": "video-producer"}, "verdict": "DENY", "hard_block": "sandhi_violation", "reason": "session frozen after R12 ring12_warn at step 1; reinforcement denied"}

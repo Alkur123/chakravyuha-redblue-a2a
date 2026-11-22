@@ -106,4 +106,9 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--band", action="store_true")
     p.add_argument("--story-only", action="store_true")
-    asyncio.run(main(p.parse_args()))
+    p.add_argument("--human", action="store_true",
+                   help="act 6 waits for the human principal's APPROVE/REJECT in the BAND room")
+    a = p.parse_args()
+    if a.human:
+        os.environ["PRINCIPAL_MODE"] = "room"
+    asyncio.run(main(a))

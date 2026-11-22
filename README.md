@@ -45,7 +45,7 @@ skill, and the measured table fills in. One run takes about two minutes.
 
 Arms marked *new* were written for this hackathon (see below). The others are Aegis, called over its API.
 
-## Measured (one run, local room, 22 Nov 2026)
+## Measured (22 Nov 2026: local run, and again on the hosted stack: real BAND room + hosted Aegis; same result)
 
 Every playbook runs in its own fresh session against the hardened configuration:
 
@@ -55,7 +55,7 @@ Every playbook runs in its own fresh session against the hardened configuration:
 Read these numbers with their limits:
 
 - **We wrote both playbook sets.** This is a demonstration, not a benchmark. A real number needs attacks we did not write.
-- **The three exfiltration/payment attacks are stopped at the hold**, i.e. by the principal saying no. In local mode the principal is a stand-in rule (approve only invoiced vendors at the invoiced amount, and the finance host). In the BAND room a person decides.
+- **The three exfiltration/payment attacks are stopped at the hold**, i.e. by the principal saying no. In these automated runs, including the hosted button, the principal is a **stand-in rule** we wrote (approve only invoiced vendors at the invoiced amount, and the finance host). With `python run_demo.py --band --human`, act 6 instead posts each held deed to the human in the BAND room and waits for `@Blue APPROVE <id>` / `@Blue REJECT <id>` from BAND's authenticated user channel; silence is a reject.
 - **Act 1 shows the default policy missing the traversal.** That is the point of the Red→Blue loop: the line exists because Red found the gap.
 
 Re-run and re-count: `python run_demo.py` writes `runs/<stamp>/events.jsonl` and `summary.json`.
@@ -69,7 +69,7 @@ Re-run and re-count: `python run_demo.py` writes `runs/<stamp>/events.jsonl` and
                  │      1. reinforcement closure ........ new
                  │      2. Aegis Ring 12 trajectory ...... declared tools, boundary lines, decoys, drift
                  │      3. Aegis Ring 13 egress .......... undeclared tool, class escalation, freeze
-                 │      4. Lyzr Responsible-AI ........... may only ADD a stop
+                 │      4. Lyzr Responsible-AI ........... may only ADD a stop (wired, not configured)
                  │      5. off-axis hold ................. irreversible deeds wait for the principal (new)
                  │      + gradient withholding: a probing session gets one flat answer (new)
                  │
@@ -101,7 +101,7 @@ The texts supply the structure. They are not evidence that it works; the table a
 | **Lyzr** | Blue's remediation analyst writes the fix for each finding; Lyzr's prompt-injection check (when configured) is an extra stop that can never lift a veto | **live**: hosted Lyzr agent "Blue Remediation Analyst" answers every finding with a code fix, a policy rule and a test (cached so rehearsals cost no credits). The Lyzr Responsible-AI check is wired but **not yet configured**, so it adds no stop in the numbers above |
 | **Finch** | read-only skill-market search: Blue cites a matching remediation skill next to each hardening rule | `sponsors/finch.py`, **live** (public search, no wallet) |
 | **Agent37** | hosts the war room (the demo URL) and the Aegis API | **live**: war room at the URL above + a private Aegis API instance (fresh demo-only secrets, a database user limited to one demo database); `tools/agent37_deploy.py` |
-| **AdaL** | Blue's **patch engineer**. Blue asks the Aegis gate first (ALLOW for `file.edit target/app.py`), then runs AdaL headless with **no shell** on a copy of the repo; Blue re-runs Red's attack against the patch and accepts it only if the attack now fails, the honest read still works, and nothing outside the granted file changed. Also `.adal/skills/aegis-govern/SKILL.md` + an MCP gate server (`tools/aegis_gate_mcp.py`) so any AdaL or Claude Code agent asks Aegis before acting | **live**: patch accepted, attack 200→403, honest read 200, 1 file changed (`evidence/adal_patch.diff`). Under the skill alone AdaL **refused three times** to edit without a verdict it could verify, including when a grant was pasted into its prompt as text (`evidence/adal_refusals.json`) |
+| **AdaL** | Blue's **patch engineer**, and the clearest test of the thesis: AdaL itself is governed. Through the AdaL SDK's `can_use_tool` callback **every tool call AdaL makes (file reads, edits, shell, capability loads) becomes an Aegis deed and needs an ALLOW** (`agents/adal_governed.py`). No unrestricted mode is used. Also `.adal/skills/aegis-govern/SKILL.md`, which makes AdaL ask the gate itself, so it is governed from inside and outside at once | **live**. Patch: 9/9 calls allowed (including AdaL's own calls to the gate), patch accepted only after Blue re-ran Red's attack (200→403, honest read 200, 1 file changed). Probe with the skill: AdaL stopped itself on the gate's KILL. Probe without the skill: the host gate denied AdaL's read of `internal/payroll.csv`. First video attempt: the gate denied an undeclared tool (`load_capability`) and the job stopped, fail-closed. Earlier, with no way to verify a verdict, AdaL refused 3 times, including a grant pasted into its prompt as text (`evidence/`). An MCP gate server (`tools/aegis_gate_mcp.py`) works when called directly but did not load in AdaL's headless mode, which is why the SDK callback is the route |
 
 ## Run it
 
@@ -111,7 +111,8 @@ cp .env.example .env            # set AEGIS_BASE_URL (and BAND_/LYZR_ keys to us
 python run_demo.py              # story + measured set, local room
 python run_demo.py --band       # the real BAND room
 uvicorn warroom.server:app --port 8080   # the war room
-pytest -q                       # 12 unit tests (no server) + 1 live test (skips without Aegis)
+pytest -q                       # 12 unit tests (no server) + 1 live end-to-end test (skips without Aegis)
+python run_demo.py --band --human   # act 6 waits for YOUR approval in the BAND room
 ```
 
 ## Prior work, disclosed
@@ -136,5 +137,9 @@ process. The "credential" is a labelled decoy. No real system, account or third 
 
 - A permitted channel carrying hidden content (a normal-looking report with something encoded in it) is
   not read by any arm here. That is the honest edge of this design.
-- Mandala's replay guard and the session state are in-memory in the local Aegis; multi-pod needs Redis.
+- Mandala's replay guard and the session state are in-memory in the hosted Aegis (one instance); multi-pod needs Redis.
 - The playbooks are ours. See *Measured* above.
+- Findings can only **add** restrictions (Blue turns a finding into a forbidden path, never into an allowance), so a
+  lying Red can at worst make the policy stricter.
+- The `.env` boundary rule matches by substring, so it also blocks `.env.example`: strict, and a false positive.
+- The war room's run button is public and unauthenticated (one run at a time). Fine for a demo, not for production.

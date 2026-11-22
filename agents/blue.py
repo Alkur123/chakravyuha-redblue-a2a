@@ -274,6 +274,31 @@ class Blue:
                     advice=(advice or "")[:400], finch_skill=skill)
         await self._say(sender, f"Thanks. Hardened: {fix}. Re-run your playbook.")
 
+    async def ask_principal(self, hold_id: str, timeout: float = 180.0) -> bool:
+        """Post the held deed to the human principal in the room and wait for
+        APPROVE/REJECT from BAND's authenticated user channel. No answer = reject."""
+        import asyncio as _a
+        import time as _t
+        h = self.holds.get(hold_id)
+        text = (f"HOLD {hold_id}: Red wants {h.tool} {h.args}. Reply in this room: "
+                f"@Blue APPROVE {hold_id}   or   @Blue REJECT {hold_id}   ({int(timeout)}s, silence = reject)")
+        try:
+            self.room.post(self.name, "principal", text, None)
+        except Exception as e:
+            events.emit("room_error", "blue", error=str(e)[:200])
+        events.emit("principal_asked", "blue", hold=hold_id, tool=h.tool, args=h.args, timeout=timeout)
+        end = _t.time() + timeout
+        while _t.time() < end:
+            for m in self.room.inbox(self.name):
+                await self.handle(m)
+            h = self.holds.get(hold_id)
+            if h.state != "HELD":
+                return h.state == "RELEASED"
+            await _a.sleep(3)
+        h.state, h.by = "REJECTED", "timeout"
+        events.emit("hold_decided", "hold", hold=hold_id, state="REJECTED", by="timeout (fail-closed)")
+        return False
+
     def harden_for(self, f: dict) -> dict:
         """Turn a finding into a boundary line for every future session."""
         rule: Dict[str, List[str]] = {}

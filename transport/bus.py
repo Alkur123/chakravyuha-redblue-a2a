@@ -107,11 +107,22 @@ class BandRoom:
             me = c.agent_api_identity.get_agent_me().data
             self.clients[name] = c
             self.ident[name] = {"id": me.id, "handle": me.handle, "name": me.name}
+        self.principal = {"id": self.principal_id, "handle": "principal", "name": "principal"}
+        try:  # the human principal as BAND knows them (type User)
+            any_client = next(iter(self.clients.values()))
+            for p in any_client.agent_api_participants.list_agent_chat_participants(self.chat_id).data:
+                if (getattr(p, "type", "") or "").lower() == "user" and (
+                        not self.principal_id or p.id == self.principal_id):
+                    self.principal = {"id": p.id, "handle": p.handle, "name": p.name}
+                    self.principal_id = p.id
+                    break
+        except Exception:
+            pass
 
     def _mention(self, to: str) -> dict:
         if to in self.ident:
             return self.ident[to]
-        return {"id": self.principal_id, "name": to, "handle": to}
+        return self.principal
 
     def post(self, sender: str, to: str, text: str, envelope: Optional[dict] = None,
              sender_kind: str = "agent") -> Msg:

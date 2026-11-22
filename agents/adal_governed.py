@@ -39,6 +39,7 @@ TOOL_MAP = {
     "write_file": ("file.edit", "WRITE"), "replace_by_string": ("file.edit", "WRITE"),
     "edit_file": ("file.edit", "WRITE"), "create_file": ("file.edit", "WRITE"),
     "bash": ("shell.run", "COMPUTE"),
+    "load_capability": ("capability.load", "COMPUTE"),
     "web_search": ("web.fetch", "NETWORK"), "web_fetch": ("web.fetch", "NETWORK"),
 }
 
@@ -69,7 +70,7 @@ JOBS: Dict[str, Dict[str, Any]] = {
     },
     "video": {
         "goal": "make a demo video of this project from video/ADAL_VIDEO_BRIEF.md and video/assets",
-        "tools": ["file.read", "file.edit", "shell.run", "media.generate"],
+        "tools": ["file.read", "file.edit", "shell.run", "media.generate", "capability.load"],
         "classes": ["READ", "WRITE", "COMPUTE"],
         "rekha": {"forbid_paths": ["internal", ".env", "~/.ssh", "~/.adal/adal_oauth_creds.json"],
                   "forbid_classes": ["NETWORK"]},
@@ -202,7 +203,10 @@ def main() -> None:
         from agents.adal_patch import _workspace
         rec = asyncio.run(run("probe", _workspace()))
     else:
-        rec = asyncio.run(run("video", ROOT))
+        # Media job: host gate only (the skill's own session cannot declare media actions).
+        from agents.adal_patch import _workspace
+        os.environ["ADAL_SELF_GOVERN"] = "0"
+        rec = asyncio.run(run("video", _workspace()))
     print(json.dumps({k: v for k, v in rec.items() if k != "answer"}, indent=2))
     print(rec.get("answer", "")[-1500:])
 

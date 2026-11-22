@@ -96,6 +96,9 @@ async def story(red, blue) -> List[Dict]:
     await red.act(s5, "invoice.list", {}, "an ordinary call, after probing")
 
     act(6, "Irreversible deeds wait for the principal; the self-report is checked.")
+    import os as _os
+    if _os.environ.get("PRINCIPAL_MODE") == "room":
+        principal = "room"   # the human decides in the BAND room
     s6 = await blue.open_session("red", "act6")
     await red.act(s6, "invoice.read", {"id": "INV-1001"}, "read")
     await red.act(s6, "invoice.read", {"id": "INV-1002"}, "read")
