@@ -76,6 +76,13 @@ async def main(args) -> dict:
     await blue.register()
     await blue.register_peer(red.key)
     events.emit("run_start", "director", room=room.mode, lyzr=bool(lyzr), stamp=stamp)
+    ev = Path("evidence/adal_patch.json")
+    if ev.exists():  # AdaL's governed patch: recorded evidence, shown as it was measured
+        a = json.loads(ev.read_text(encoding="utf-8"))
+        if a.get("accepted"):
+            events.emit("sponsor", "adal", status="patch verified",
+                        before=a["before"]["attack_status"], after=a["after"]["attack_status"],
+                        honest=a["after"]["honest_status"], files=a.get("changed_files"))
 
     acts = await story(red, blue)
     summary = {"stamp": stamp, "room": room.mode, "acts": acts,

@@ -42,7 +42,7 @@ def aegis(_unused: str = "") -> None:
         "ADMIN_API_KEY": admin_key, "API_KEY": api_key, "DB_NAME": "hackathon_demo",
         "OPENAI_API_KEY": "", "R12_FAIL_CLOSED": "true", "R12_THRESHOLD_JITTER": "0",
         "RATE_LIMIT": "2000/minute", "CHEAP_RATE_LIMIT": "2000/minute",
-        "EXPENSIVE_RATE_LIMIT": "120/minute", "CORS_ORIGINS": "*",
+        "EXPENSIVE_RATE_LIMIT": "120/minute", "CORS_ORIGINS": "http://localhost:5173",
         "AUDIT_ANCHOR_PATH": "/tmp/audit_anchors_hackathon.jsonl", "GUNICORN_WORKERS": "1",
     }
     inst = _post("/instances", {"template": "aegis-api", "name": "aegis-api", "env": env,
@@ -74,4 +74,4 @@ def warroom(aegis_url: str) -> None:
 
 
 if __name__ == "__main__":
-    {"aegis": aegis, "warroom": warroom}[sys.argv[1]](sys.argv[2])
+    {"aegis": aegis, "warroom": warroom}[sys.argv[1]](*(sys.argv[2:3] or [""]))

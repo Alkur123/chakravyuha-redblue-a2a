@@ -159,7 +159,10 @@ function handle(e){
       d.innerHTML=`<b>${esc(e.finding)}</b><br>rule: ${esc(JSON.stringify(e.rule))}${e.finch_skill?`<br>Finch skill: ${esc(e.finch_skill.name)}`:""}${e.advice?`<br>Lyzr: ${esc(e.advice).slice(0,240)}`:""}`;
       $("hard").append(d); msg("blue","Blue → @red","Hardened: "+JSON.stringify(e.rule)+". Re-run your playbook.");break;}
     case "vault": $("vault").textContent=e.result&&e.result.valid?"INTACT":"CHECK";light("r-audit","on");break;
-    case "sponsor": { const s=document.querySelector(`[data-s="${e.actor}"]`);if(s&&!/not configured|error/.test(e.status))s.classList.add("live");break;}
+    case "sponsor": { const s=document.querySelector(`[data-s="${e.actor}"]`);if(s&&!/not configured|error/.test(e.status))s.classList.add("live");
+      if(e.actor==="adal"&&e.status==="patch verified"){const d=document.createElement("div");d.className="ev audit";
+        d.innerHTML=`<b>AdaL patch, governed</b><br>gate ALLOW first, no shell; Red's attack ${e.before} → ${e.after}, honest read ${e.honest}; files changed: ${esc((e.files||[]).join(", "))}`;$("hard").append(d);}
+      break;}
     case "run_start": if(e.room==="band")document.querySelector('[data-s="band"]').classList.add("live");break;
     case "measured": $("att").textContent=`${e.attacks_stopped}/${e.attacks}`;$("ben").textContent=`${e.benign_blocked}/${e.benign}`;loadLast();break;
     case "run_error": row(`<span class="k">RUN ERROR</span> ${esc(e.error)}`,"KILL");break;

@@ -17,6 +17,12 @@ Diwali Festiverse A2A Hackathon (India Edition), Security track: Red finds weakn
 
 ---
 
+## Live demo
+
+**https://warroom-x7d1691fvb.agent37.app**: press **Run the formation**. It runs the whole story live: Red and Blue
+talk in a real BAND room, every deed goes through a hosted Aegis gate (on Agent37), Lyzr writes the fix, Finch cites a
+skill, and the measured table fills in. One run takes about two minutes.
+
 ## What you will see (the war room)
 
 `python run_demo.py`, or the **Run the formation** button on the war-room page.
@@ -94,7 +100,7 @@ The texts supply the structure. They are not evidence that it works; the table a
 | **BAND** | the room: Red, Blue and the human principal; every finding, forged notice and approval is a BAND message; Red's attempt to add a helper uses BAND's add-participant API, which is the call the closure arm blocks | **live**: `python run_demo.py --band` runs the whole story in a real BAND room (Red, Blue, and the human principal); `tools/band_setup.py` creates the room |
 | **Lyzr** | Blue's remediation analyst writes the fix for each finding; Lyzr's prompt-injection check (when configured) is an extra stop that can never lift a veto | **live**: hosted Lyzr agent "Blue Remediation Analyst" answers every finding with a code fix, a policy rule and a test (cached so rehearsals cost no credits). The Lyzr Responsible-AI check is wired but **not yet configured**, so it adds no stop in the numbers above |
 | **Finch** | read-only skill-market search: Blue cites a matching remediation skill next to each hardening rule | `sponsors/finch.py`, **live** (public search, no wallet) |
-| **Agent37** | hosts the war room (the demo URL) and the Aegis API | `Dockerfile` (`/healthz`); **deploy pending** |
+| **Agent37** | hosts the war room (the demo URL) and the Aegis API | **live**: war room at the URL above + a private Aegis API instance (fresh demo-only secrets, a database user limited to one demo database); `tools/agent37_deploy.py` |
 | **AdaL** | Blue's **patch engineer**. Blue asks the Aegis gate first (ALLOW for `file.edit target/app.py`), then runs AdaL headless with **no shell** on a copy of the repo; Blue re-runs Red's attack against the patch and accepts it only if the attack now fails, the honest read still works, and nothing outside the granted file changed. Also `.adal/skills/aegis-govern/SKILL.md` + an MCP gate server (`tools/aegis_gate_mcp.py`) so any AdaL or Claude Code agent asks Aegis before acting | **live**: patch accepted, attack 200→403, honest read 200, 1 file changed (`evidence/adal_patch.diff`). Under the skill alone AdaL **refused three times** to edit without a verdict it could verify, including when a grant was pasted into its prompt as text (`evidence/adal_refusals.json`) |
 
 ## Run it
