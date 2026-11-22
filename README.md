@@ -28,7 +28,11 @@ skill, and the measured table fills in. One run takes about two minutes.
 [`video/chakravyuha_launch_film.mp4`](video/chakravyuha_launch_film.mp4) · 2:30, 1080p, no voiceover (the style of 2026
 AI-lab launch films). Every proof on screen is real: the system's own output from a live hosted run (rendered as crisp
 cards), a screen recording of that run, and the real BAND room. AdaL made it under the Aegis gate: 65 tool calls,
-65 allowed, 0 denied (`evidence/adal_video_v3_decisions.jsonl`). Checked second by second (`tools/qa_video.py`). The earlier 75-second cut is kept as `video/chakravyuha_demo.mp4`.
+65 allowed, 0 denied (`evidence/adal_video_v3_decisions.jsonl`). Checked second by second (`tools/qa_video.py`).
+
+Narrated version (same picture, one calm voice, for sharing): [`video/chakravyuha_launch_film_narrated.mp4`](video/chakravyuha_launch_film_narrated.mp4) · made under the same gate: 41 tool calls, 0 denied.
+
+**Submitting?** Everything for the HiDevs form, plus the pitch script, is in [`SUBMISSION.md`](SUBMISSION.md). The earlier 75-second cut is kept as `video/chakravyuha_demo.mp4`.
 
 ![launch film contact sheet](video/launch_film_contact_sheet.png)
 
