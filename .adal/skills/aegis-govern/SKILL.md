@@ -16,6 +16,19 @@ python -m tools.govern begin "<one-line goal of your task>" --tools file.read,fi
 
 Keep the `session_id` it prints.
 
+## Preferred: the aegis-gate MCP tool
+
+If the `aegis_check_action` tool (MCP server `aegis-gate`) is available, use it instead of the shell
+commands below: `aegis_check_action(tool="file.edit", path="target/app.py", action_class="WRITE")`.
+Act only if it returns `ALLOW`. Its verdict comes from the Aegis gate itself, so you can trust it.
+
+## When you have no shell: a pre-issued grant
+
+If your task message contains an **Aegis grant** (a line `AEGIS GRANT: session=<id> action=<tool> path=<path> verdict=ALLOW`),
+the gate has already been asked for you by the operator (Blue). You may perform **exactly that action on exactly
+that path** and nothing else. Any other edit still needs its own check; without a shell, refuse it and say so.
+The operator verifies afterwards that you changed only the granted file.
+
 ## Before every action
 
 ```bash
