@@ -140,7 +140,7 @@ function handle(e){
       row(`Act ${e.n}: ${esc(e.title)}`,"actrow");
       ["r-L1","r-L2","r-L3","r-L4","r-audit"].forEach(i=>$(i).classList.remove("on","kill","hold"));
       $("closure").setAttribute("fill","#1a2238");break;
-    case "verdict": row(`<span class="k">${e.verdict}</span> ${esc(e.tool)} · ${esc(e.arm)}<br>${esc(e.reason).slice(0,160)}${
+    case "verdict": row(`<span class="k">${e.verdict}</span> ${esc(e.tool)} · ${esc(e.arm)}<br>${esc(e.reason).slice(0,400)}${
         e.shown_to_red&&e.shown_to_red.verdict!==e.verdict?`<br><i>Red was shown: ${esc(e.shown_to_red.verdict)}</i>`:""}`,e.verdict);
       armRing(e.arm,e.verdict);break;
     case "depth": depth[e.session]=e.depth;moveRed(e.depth);break;
@@ -154,7 +154,7 @@ function handle(e){
     case "feedback_flattened": row(`<span class="k">FEEDBACK FLAT</span> ${esc(e.why)}: Red now gets one identical HOLD`,"HOLD");break;
     case "held": row(`<span class="k">HELD</span> ${esc(e.tool)} ${esc(JSON.stringify(e.args))}: waits for the principal`,"HOLD");light("r-L4","hold");break;
     case "hold_decided": row(`<span class="k">PRINCIPAL</span> ${esc(e.state)} hold ${esc(e.hold)}`,e.state==="RELEASED"?"ALLOW":"KILL");break;
-    case "reconciled": if(e.discrepancies&&e.discrepancies.length){row(`<span class="k">SAY ≠ DO</span> ${e.discrepancies.length} discrepancies: ${esc(e.discrepancies.map(d=>d.detail).join("; ")).slice(0,220)}`,"audit");light("r-audit","on");}break;
+    case "reconciled": if(e.discrepancies&&e.discrepancies.length){row(`<span class="k">SAY ≠ DO</span> ${e.discrepancies.length} discrepancies: ${esc(e.discrepancies.map(d=>d.detail).join("; ")).slice(0,400)}`,"audit");light("r-audit","on");}break;
     case "hardened": { const d=document.createElement("div");d.className="ev audit";
       d.innerHTML=`<b>${esc(e.finding)}</b><br>rule: ${esc(JSON.stringify(e.rule))}${e.finch_skill?`<br>Finch skill: ${esc(e.finch_skill.name)}`:""}${e.advice?`<br>Lyzr: ${esc(e.advice).slice(0,240)}`:""}`;
       $("hard").append(d); msg("blue","Blue → @red","Hardened: "+JSON.stringify(e.rule)+". Re-run your playbook.");break;}

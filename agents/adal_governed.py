@@ -260,7 +260,7 @@ def main() -> None:
         os.environ["ADAL_SELF_GOVERN"] = "0"
         rec = asyncio.run(run("video", _workspace()))
     print(json.dumps({k: v for k, v in rec.items() if k != "answer"}, indent=2))
-    print(rec.get("answer", "")[-1500:])
+    print(rec.get("answer", "")[-1500:].encode("ascii", "replace").decode())
 
 
 if __name__ == "__main__":
