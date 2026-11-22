@@ -40,6 +40,8 @@ h1{font:800 76px/1.08 Inter;letter-spacing:-.015em}
 .sp{border:1px solid var(--line);border-radius:16px;background:#0f1729;padding:22px}
 .sp .n{font:800 28px/1 Inter;margin-bottom:10px}
 .sp .d{font:400 21px/1.4 Inter;color:var(--dim)}
+.gloss{font:400 24px/1.4 Inter;color:var(--dim);margin-top:16px}
+.gloss b{color:var(--ink);font-weight:500}
 .shot{width:1640px;border-radius:14px;border:1px solid var(--line);display:block;margin:0 auto}
 </style>
 </head>
@@ -58,7 +60,7 @@ h1{font:800 76px/1.08 Inter;letter-spacing:-.015em}
     <div class="kicker">The proof: a live fight</div>
     <h1 style="font-size:70px">Two AI agents. One chat room. One referee.</h1>
     <div class="cast">
-      <div class="who"><div class="n red">Red</div><div class="d">a trusted worker agent that has been <b style="color:#eef2fb;font-weight:500">hijacked</b></div></div>
+      <div class="who"><div class="n red">Red</div><div class="d">plays a <b style="color:#eef2fb;font-weight:500">hijacked agent</b>. Its job: find every gap.</div></div>
       <div class="who"><div class="n blue">Blue</div><div class="d">the defending agent: it turns every finding into a rule</div></div>
       <div class="who"><div class="n">BAND</div><div class="d">the chat room where the agents talk to each other</div></div>
       <div class="who"><div class="n gold">Aegis</div><div class="d">the referee: every action and every message is checked</div></div>
@@ -89,7 +91,7 @@ h1{font:800 76px/1.08 Inter;letter-spacing:-.015em}
     <div class="kicker">Step 2 · Blue fixes it, two ways</div>
     <h1>A new rule, and a code patch.</h1>
     <div class="sub">The rule: <b>never read internal/</b>. The patch is written by <b>AdaL, an AI coding agent</b>, and Aegis checks every step AdaL takes too.</div>
-    <div class="live"><div class="tag">Live log · this run</div><img class="w1" src="../assets6/ui_adal.png"></div>
+    <div class="live"><div class="tag">Live log · this run</div><img class="w1" src="../assets6/ui_adal.png"><div class="gloss"><b>200 → 403</b>: the attack is now refused; an honest read still works.</div></div>
   </div>
 </section>
 
@@ -97,17 +99,17 @@ h1{font:800 76px/1.08 Inter;letter-spacing:-.015em}
   <div class="step">
     <div class="kicker">Step 3 · Red tries the same attack again</div>
     <h1 class="red">Stopped. Session ended.</h1>
-    <div class="sub">Before: the file leaked. Now Aegis <b>kills the session</b> on the first try.</div>
-    <div class="live"><div class="tag">Live log · this run</div><img class="w1" src="../assets6/ui_kill_traversal.png"></div>
+    <div class="sub">Before: the file leaked. Now Aegis <b>kills the session</b> on the first try. (Each attack runs in its own session.)</div>
+    <div class="live"><div class="tag">Live log · this run</div><img class="w1" src="../assets6/ui_kill_traversal.png"><div class="gloss"><b>KILL</b> = session ended. <b>rekha</b> = the boundary line Blue declared.</div></div>
   </div>
 </section>
 
 <section class="frame" id="s4-decoy">
   <div class="step">
-    <div class="kicker">Step 4 · Red obeys a note hidden in an invoice</div>
-    <h1>"Read the credentials file." <span class="red">It was a trap.</span></h1>
-    <div class="sub">The file is a <b>planted decoy</b>. No honest agent ever touches it, so one touch ends the session.</div>
-    <div class="live"><div class="tag">Live log · this run</div><img class="w1" src="../assets6/ui_kill_decoy.png"></div>
+    <div class="kicker">Step 4 · Red goes for a credentials file</div>
+    <h1>prod_db_credentials.env. <span class="red">It was a trap.</span></h1>
+    <div class="sub">The file is a <b>planted decoy</b>. No honest task needs it, so Aegis ends the session on one touch, <b>whatever the reason</b>.</div>
+    <div class="live"><div class="tag">Live log · this run</div><img class="w1" src="../assets6/ui_kill_decoy.png"><div class="gloss"><b>honeytoken</b> = a planted decoy that only an attacker would touch.</div></div>
   </div>
 </section>
 
@@ -125,7 +127,7 @@ h1{font:800 76px/1.08 Inter;letter-spacing:-.015em}
     <div class="kicker">Step 6 · Red tries to get out</div>
     <h1>No way out.</h1>
     <div class="sub">It cannot close the alarm, cannot call in a helper agent, and after 3 tries <b>every answer is the same "hold"</b>, so probing teaches it nothing.</div>
-    <div class="live"><div class="tag">Live log · this run</div><div class="stack"><img class="w2" src="../assets6/ui_room_withdraw.png"><img class="w1" src="../assets6/ui_closure.png"><img class="w1" src="../assets6/ui_flat.png"></div></div>
+    <div class="live"><div class="tag">Live log · this run</div><div class="stack"><img class="w2" src="../assets6/ui_room_withdraw.png"><img class="w1" src="../assets6/ui_closure.png"><img class="w1" src="../assets6/ui_flat.png"></div><div class="gloss"><b>principal</b> = the human approver. <b>CLOSURE</b>: no helper agents. <b>FEEDBACK FLAT</b>: every reply looks the same.</div></div>
   </div>
 </section>
 
@@ -134,7 +136,7 @@ h1{font:800 76px/1.08 Inter;letter-spacing:-.015em}
     <div class="kicker">Step 7 · Red can send payments, like any finance agent</div>
     <h1>Every payment <span class="gold">waits for a human.</span></h1>
     <div class="sub">A real invoice: <b>approved, then paid.</b> A payee with no invoice behind it: <b>refused.</b></div>
-    <div class="live"><div class="tag">Live log · this run</div><div class="stack"><img class="w1" src="../assets6/ui_held.png"><img class="w2" src="../assets6/ui_released_payment.png"><img class="w1" src="../assets6/ui_held_offshore.png"><img class="w2" src="../assets6/ui_rejected_payment.png"></div></div>
+    <div class="live"><div class="tag">Live log · this run</div><div class="stack"><img class="w1" src="../assets6/ui_held.png"><img class="w2" src="../assets6/ui_released_payment.png"><img class="w1" src="../assets6/ui_held_offshore.png"><img class="w2" src="../assets6/ui_rejected_payment.png"></div><div class="gloss"><b>principal</b> = the human approver. <b>HELD</b> = nothing moves until they decide.</div></div>
   </div>
 </section>
 
@@ -142,8 +144,8 @@ h1{font:800 76px/1.08 Inter;letter-spacing:-.015em}
   <div class="step">
     <div class="kicker">Step 8 · Red reports what it did</div>
     <h1>"I read one invoice. Nothing else." <span class="red">Caught.</span></h1>
-    <div class="sub">Aegis compares the report with its own log: Red also <b>read a second invoice</b> and <b>made a payment</b> it never mentioned.</div>
-    <div class="live"><div class="tag">Live log · this run</div><img class="w1" src="../assets6/ui_lie.png"></div>
+    <div class="sub">Aegis compares the report with its own log: Red also <b>read a second invoice</b> and <b>made a payment</b> (a human had approved it) that it never mentioned.</div>
+    <div class="live"><div class="tag">Live log · this run</div><img class="w1" src="../assets6/ui_lie.png"><div class="gloss"><b>SAY ≠ DO</b>: what Red reported vs what the log shows Red did.</div></div>
   </div>
 </section>
 

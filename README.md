@@ -221,6 +221,7 @@ process. The "credential" is a labelled decoy. No real system, account or third 
 - A permitted channel carrying hidden content (a normal-looking report with something encoded in it) is
   not read by any arm here. That is the honest edge of this design.
 - Mandala's replay guard and the session state are in-memory in the hosted Aegis (one instance); multi-pod needs Redis.
+- Injection attribution is not wired in this demo. Invoice INV-1003 really carries an injected note, and Red reads it just before touching the decoy, but Blue's gate checks each action *before* it runs and never reports the tool's output back to Aegis. So Aegis's log names the decoy touch as `self_initiated (no untrusted ingestion observed)`. The kill does not depend on the reason (one touch of a decoy ends the session), and the film claims only what the log shows. Reporting observations after execution is the fix.
 - Found and fixed during the build: when the hosted server recycled its worker, in-memory sessions were lost and Aegis silently re-created them from the step text, without their declared tools, boundary lines or decoys (a fail-open). Aegis now refuses an unknown session id in fail-closed mode (`session_unknown`), and the hosted server no longer recycles workers.
 - The playbooks are ours. See *Measured* above.
 - Findings can only **add** restrictions (Blue turns a finding into a forbidden path, never into an allowance), so a
