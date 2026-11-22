@@ -97,6 +97,7 @@ class BandRoom:
         self.principal_id = os.environ.get("BAND_PRINCIPAL_ID", "")
         self.clients: Dict[str, object] = {}
         self.ident: Dict[str, dict] = {}
+        self._seen: set = set()       # message ids already handed to an agent
         for name in agents:
             key = os.environ.get(f"BAND_KEY_{name.upper()}")
             if not key:
@@ -130,15 +131,20 @@ class BandRoom:
         out: List[Msg] = []
         by_id = {v["id"]: k for k, v in self.ident.items()}
         for m in resp.data:
+            if (me, m.id) in self._seen:
+                continue
+            self._seen.add((me, m.id))
             text, env = unpack(m.content)
             is_principal = (m.sender_type or "").lower() == "user" and (
                 not self.principal_id or m.sender_id == self.principal_id)
             sender = by_id.get(m.sender_id, m.sender_name or m.sender_id)
             out.append(Msg(sender, "principal" if is_principal else "agent", text, env, id=m.id))
-            try:
-                c.agent_api_messages.mark_agent_message_processed(self.chat_id, m.id)
-            except Exception:
-                pass
+            for mark in ("mark_agent_message_processing", "mark_agent_message_processed"):
+                try:
+                    getattr(c.agent_api_messages, mark)(self.chat_id, m.id)
+                except Exception as e:
+                    self.mark_errors = getattr(self, "mark_errors", 0) + 1
+                    self.last_mark_error = str(e)[:200]
         return out
 
     def add_participant(self, by: str, who_id: str) -> dict:
