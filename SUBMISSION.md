@@ -26,14 +26,20 @@ https://app.hidevs.xyz/hackathons/diwali-festiverse-a2a-india-2026?tab=finale-pr
 
 ### Project description
 
-In the Mahabharata, Abhimanyu could break into the Chakravyuha formation but could not get out. We built that
-formation for AI agents and reversed it: the attacker gets in, and cannot get out.
+AI agents now act on their own: they read files, move money and message other agents. One hijacked agent can do all
+of that. Aegis checks every action an AI agent takes, before it runs, and judges what the agent does, never what it
+says about itself.
 
-A Red agent attacks a sandbox invoice service and reports what it finds to a Blue agent in a real BAND room. Every
-message carries an Ed25519 signature that Aegis verifies. Every tool call Red makes passes one gate first, and the gate
-judges the action itself (tool, arguments, action class), never the agent's explanation of it. Blue turns each finding
-into a stricter rule; Lyzr writes the fix; Finch cites a matching skill; AdaL patches the code while every one of AdaL's
-own tool calls is decided by the same gate.
+In the Mahabharata, the Chakravyuha was a spiral formation, easy to walk into and built so no one gets out; Abhimanyu
+broke in and could not get out. We turned it around: Aegis builds those rings around every AI agent (signed messages,
+one gate for every action, boundary lines, decoy credentials, human approval), so a hijacked agent gets in and cannot
+get out.
+
+To prove it, two agents fight in a real BAND room. Red, a red-team agent playing a hijacked finance agent, attacks a
+sandbox invoice service and reports what it finds to Blue. Every message carries an Ed25519 signature that Aegis
+verifies, and every tool call Red makes passes one gate first. Blue turns each finding into a stricter rule; Lyzr
+writes the fix; Finch cites a matching skill; AdaL patches the code while every one of AdaL's own tool calls is decided
+by the same gate.
 
 New mechanisms written for this event: alarms the accused agent cannot withdraw; a stand-down that needs two kinds of
 source; closure of reinforcements (no recruiting helpers or fresh sessions once suspect); flat feedback for a probing
@@ -76,7 +82,7 @@ in time, so it adds no stop in our numbers.
 ### How did you use Agent37?
 
 Agent37 hosts everything live: the war room (the demo URL) and a private Aegis API, both built from Dockerfiles with
-Agent37's template builder and updated in place across five revisions. The hosted Aegis has fresh demo-only secrets and a
+Agent37's template builder and updated in place across six revisions. The hosted Aegis has fresh demo-only secrets and a
 database user limited to one demo database. "Run the formation" runs the whole story from Agent37: the BAND room, the gate,
 Lyzr, Finch and the measured table.
 
@@ -94,6 +100,10 @@ Lyzr, Finch and the measured table.
 - A long AdaL job exposed a real bug in our own engine: when the hosted server recycled its worker, a lost session was
   silently re-created without its declared tools, boundary lines or decoys. We fixed it in Aegis: an unknown session is
   now refused (fail-closed), with 4 new tests and 493 passing, and deployed the fix to the hosted demo.
+- Our launch film first failed a blind test: a reviewer who saw only the frames scored clarity 5/10 (the Chakravyuha
+  was never explained, the cast never introduced, too much jargon). We rebuilt it four times against fresh blind reviews,
+  put the product's own UI from the live run on every step, and fixed every place a card claimed more than its own log
+  showed (one was ours: injection attribution is not wired in this demo, so the film claims only what the log proves).
 - We did not send production secrets to the cloud: the hosted stack has its own keys and a scoped database user.
 
 ## 3. Pitch recording (on the HiDevs page)
@@ -118,8 +128,8 @@ and Aegis referees every move. Let me show you."
 - *(0:32 live)* "This is the real run, hosted on Agent37."
 - *(0:40 step 1-2)* "Red finds a real gap. Blue turns it into a rule, and AdaL patches the code, governed by Aegis too."
 - *(0:52 step 3-4)* "Same attack: session ended. And a planted decoy credential ends it on one touch."
-- *(1:03 step 5)* "This is the part I care about. Red signs a message as Blue. Aegis checks the key. Rejected."
-- *(1:10 step 6-7)* "It can't close its own alarm or call for help, and every payment waits for a human."
+- *(1:03 step 5)* "This is the part I care about. Red pretends to be Blue, but the signature is Red's. Rejected."
+- *(1:10 step 6-7)* "It can't close its own alarm or call for help, and every payment is held for approval."
 - *(1:24 step 8)* "And when Red lies in its report, the log catches it."
 - *(1:31 results)* "Twelve of twelve attacks stopped, zero honest tasks blocked. Our own tests, so a demonstration, not a benchmark."
 
