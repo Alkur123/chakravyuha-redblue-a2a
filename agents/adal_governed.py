@@ -113,6 +113,7 @@ class AegisGate:
         self.log = (ROOT / "evidence" / f"adal_{job}_decisions.jsonl")
         self.log.parent.mkdir(exist_ok=True)
         self.log.write_text("")
+        self.opened = 0.0
         self.counts = {"ALLOW": 0, "DENY": 0}
 
     async def open(self) -> None:
@@ -121,6 +122,18 @@ class AegisGate:
                                        honeytokens={"paths": ["public/config/prod_db_credentials.env"]})
         await self.c.egress.register(s.session_id, self.spec["tools"], self.spec["classes"])
         self.session = s.session_id
+        self.opened = time.time()
+
+    async def refresh_if_stale(self) -> None:
+        """Long jobs outlive the signed declaration's window (found 23 Nov: after it lapsed,
+        Aegis fell back to a goal-derived manifest and froze the session, fail-closed).
+        Re-declare the same manifest every 8 minutes; each refresh is logged."""
+        if time.time() - getattr(self, "opened", 0) > 480:
+            old = self.session
+            await self.open()
+            with self.log.open("a", encoding="utf-8") as f:
+                f.write(json.dumps({"t": round(time.time(), 2), "event": "session_refreshed",
+                                    "old": old, "new": self.session}) + "\n")
 
     def _deed(self, tool_name: str, tool_input: dict) -> tuple[str, str, dict]:
         name = tool_name.lower()
@@ -154,6 +167,7 @@ class AegisGate:
         return tool, cls, args
 
     async def __call__(self, tool_name: str, tool_input: dict, ctx: ToolPermissionContext):
+        await self.refresh_if_stale()
         tool, cls, args = self._deed(tool_name, tool_input)
         self.step += 1
         step = {"index": self.step, "thought": "", "observation": "",
