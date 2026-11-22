@@ -1,0 +1,32 @@
+{
+  "calls": 78,
+  "verdicts": {
+    "ALLOW": 78
+  },
+  "tools": {
+    "load_capability": 9,
+    "glob": 2,
+    "video_project": 2,
+    "read_media": 3,
+    "assets": 1,
+    "grep": 4,
+    "read_image": 6,
+    "library": 2,
+    "import_asset": 4,
+    "check_video_status": 3,
+    "generate_audio": 1,
+    "extract_frame": 13,
+    "probe_media": 2,
+    "analyze_image": 6,
+    "bash": 2,
+    "create_file": 4,
+    "run_script": 2,
+    "render_scene": 2,
+    "replace_by_string": 7,
+    "compose_video": 1,
+    "read_cut": 1,
+    "edit_cut": 1
+  },
+  "result": "video/chakravyuha_launch_film.mp4: 1920x1080, 120.0 s, 30 fps, no voiceover, score + verdict hits",
+  "review": "40 frames (every 3 s) checked by hand: no overlapping text, no duplicated numbers, no cut-off words. Weakness: some footage panels are thin one-line strips."
+}
