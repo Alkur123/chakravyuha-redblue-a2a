@@ -1,0 +1,8 @@
+{
+  "calls": 65,
+  "verdicts": {
+    "ALLOW": 65
+  },
+  "result": "video/chakravyuha_launch_film.mp4 (v3): 1920x1080, 150.0 s, 30 fps, no voiceover",
+  "qa": "tools/qa_video.py: 150/150 seconds, no blank frames, no bright white blocks; full-size frame review of every beat"
+}
