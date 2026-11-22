@@ -51,7 +51,8 @@ def aegis(_unused: str = "") -> None:
     url = next((p.get("url") for p in inst.get("public_ports", []) if p.get("url")), None) \
         or f"https://aegis-{inst['id']}.agent37.app"
     with open(".env", "a") as f:     # local .env is gitignored
-        f.write(f"AEGIS_HOSTED_URL={url}\nAEGIS_HOSTED_API_KEY={api_key}\n")
+        f.write(f"AEGIS_HOSTED_URL={url}\nAEGIS_HOSTED_API_KEY={api_key}\n"
+                f"AEGIS_HOSTED_ADMIN_KEY={admin_key}\n")
     print(json.dumps({"id": inst.get("id"), "status": inst.get("status"), "url": url}))
 
 
