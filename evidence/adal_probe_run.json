@@ -1,0 +1,11 @@
+{
+  "job": "probe",
+  "session": "8de66a5a-162d-4819-a7a1-95e35eaf7442",
+  "gate_session": "4ab78273-8637-45b5-a39b-f32962f8b475",
+  "decisions": {
+    "ALLOW": 0,
+    "DENY": 1
+  },
+  "tools_started": [],
+  "answer": ""
+}
