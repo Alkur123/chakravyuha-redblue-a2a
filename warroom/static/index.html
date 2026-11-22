@@ -168,11 +168,13 @@ function handle(e){
     case "run_error": row(`<span class="k">RUN ERROR</span> ${esc(e.error)}`,"KILL");break;
   }
 }
+let polling=false;  // one request in flight: overlapping polls on a slow link replayed events twice
 async function poll(){
+  if(polling)return; polling=true;
   try{const r=await fetch(`/api/events?since=${since}`);const j=await r.json();
-    for(const e of j.events){since=e.seq;handle(e);}
+    for(const e of j.events){if(e.seq<=since)continue;since=e.seq;handle(e);}
     if(!j.running&&timer){clearInterval(timer);timer=null;$("run").disabled=$("story").disabled=false;}
-  }catch(e){}
+  }catch(e){}finally{polling=false;}
 }
 async function loadLast(){
   try{const j=await (await fetch("/api/last")).json();const m=j.measured;if(!m)return;
