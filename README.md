@@ -25,12 +25,15 @@ skill, and the measured table fills in. One run takes about two minutes.
 
 ## Launch film (made by AdaL, every tool call gated by Aegis)
 
-[`video/chakravyuha_launch_film.mp4`](video/chakravyuha_launch_film.mp4) · 2:30, 1080p, no voiceover (the style of 2026
-AI-lab launch films). Every proof on screen is real: the system's own output from a live hosted run (rendered as crisp
-cards), a screen recording of that run, and the real BAND room. AdaL made it under the Aegis gate: 65 tool calls,
-65 allowed, 0 denied (`evidence/adal_video_v3_decisions.jsonl`). Checked second by second (`tools/qa_video.py`).
+[`video/chakravyuha_launch_film.mp4`](video/chakravyuha_launch_film.mp4) · 1:44, 1080p, music only (for speaking over).
+It explains the idea first (the problem, Aegis in one sentence, the Chakravyuha and why we turned it around, the cast),
+then shows eight steps of a real hosted run. Each step pairs one plain sentence with the product's own UI from that run,
+captured from the live war room (`tools/capture_proofs.py`), plus 8 seconds of the war room running. AdaL made it under
+the Aegis gate: 96 tool calls, 0 denied (`evidence/adal_video_v6_decisions.jsonl`). Checked second by second
+(`tools/qa_video.py`), and tested on blind reviewers who saw only the frames: clarity went from 5/10 (v3) to 7/10 (v4, v5),
+and each round's findings were fixed in the next cut.
 
-Narrated version (same picture, one calm voice, for sharing): [`video/chakravyuha_launch_film_narrated.mp4`](video/chakravyuha_launch_film_narrated.mp4) · made under the same gate: 41 tool calls, 0 denied.
+Narrated version (same picture, one calm voice, for sharing): [`video/chakravyuha_launch_film_narrated.mp4`](video/chakravyuha_launch_film_narrated.mp4), from the same gated job.
 
 **Submitting?** Everything for the HiDevs form, plus the pitch script, is in [`SUBMISSION.md`](SUBMISSION.md). The earlier 75-second cut is kept as `video/chakravyuha_demo.mp4`.
 
