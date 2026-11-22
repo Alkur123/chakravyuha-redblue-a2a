@@ -54,7 +54,10 @@ def _workspace() -> Path:
     """A fresh copy of the repo at a FIXED path (AdaL keeps MCP servers per project
     folder), so the live demo target in this repo stays deliberately weak."""
     if WORKSPACE.exists():
-        shutil.rmtree(WORKSPACE)
+        def _force(func, path, _exc):  # rendered videos are written read-only
+            os.chmod(path, 0o666)
+            func(path)
+        shutil.rmtree(WORKSPACE, onerror=_force)
     shutil.copytree(ROOT, WORKSPACE, ignore=shutil.ignore_patterns(
         ".venv", ".git", "runs", ".cache", "__pycache__", ".env", ".pytest_cache", "evidence"))
     if os.environ.get("ADAL_SELF_GOVERN", "0") != "1":
