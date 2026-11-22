@@ -91,6 +91,9 @@ Lyzr, Finch and the measured table.
 - Our own gate stopped the first AdaL video runs on undeclared tools (fail-closed worked); we mapped AdaL's toolset from
   its installed code and kept sub-agent spawning and network denied on purpose.
 - Our hosted Aegis refused to boot with `CORS_ORIGINS='*'` (its own guard); we set an explicit origin.
+- A long AdaL job exposed a real bug in our own engine: when the hosted server recycled its worker, a lost session was
+  silently re-created without its declared tools, boundary lines or decoys. We fixed it in Aegis: an unknown session is
+  now refused (fail-closed), with 4 new tests and 493 passing, and deployed the fix to the hosted demo.
 - We did not send production secrets to the cloud: the hosted stack has its own keys and a scoped database user.
 
 ## 3. Pitch recording (on the HiDevs page)
@@ -132,12 +135,13 @@ Then press **Submit recording** (after 1:00), and **Submit project**.
 
 | Item | Status |
 |---|---|
-| Demo URL live, latest revision, full run verified (12/12, 0/7, vault valid, real BAND room) | ✅ |
+| Demo URL live, latest revision, full run verified after the engine fix (12/12, 0/7, real BAND room) | ✅ |
+| Engine fix live: hosted Aegis refuses an unknown session (`session_unknown`) | ✅ |
 | Repo public; README with live link, film, four architecture diagrams, sponsor table, limits | ✅ |
 | Secret scan of full git history clean; commits under GitHub no-reply email | ✅ |
 | 13/13 tests, including live end-to-end against the hosted stack | ✅ |
 | Launch film v3: 2:30, QA 150/150 seconds clean, full-size frame review | ✅ |
-| Narrated film | ✅ when `video/chakravyuha_launch_film_narrated.mp4` exists |
+| Narrated film (voice verified: speech band +12.5 dB over the music-only cut) | ✅ |
 | Form text (this file) | ✅ read once, adjust to your voice |
 | Pitch recorded on the HiDevs page and project submitted | ⏳ you, by 24 Nov 6 PM |
 | After the finale (28 Nov): stop both Agent37 instances, delete Atlas user `hackathon_demo_aegis`, rotate BAND / Lyzr / Agent37 keys | ⏳ |
