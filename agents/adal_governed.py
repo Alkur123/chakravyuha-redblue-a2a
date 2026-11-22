@@ -188,7 +188,7 @@ async def run(job: str, workspace: Path, model: str | None = None) -> dict:
     spec = JOBS[job]
     prompt = spec["prompt"]
     if prompt is None:
-        brief = (ROOT / "video" / "ADAL_VIDEO_BRIEF.md").read_text(encoding="utf-8")
+        brief = (ROOT / "video" / os.environ.get("ADAL_BRIEF", "ADAL_VIDEO_BRIEF.md")).read_text(encoding="utf-8")
         prompt = brief.split("---", 1)[1].strip()
     opts = dict(workspace=str(workspace), permission_mode="default", can_use_tool=gate,
                 can_use_tool_timeout=40.0, disabled_default_tools=spec["disabled"])
