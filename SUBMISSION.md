@@ -24,87 +24,76 @@ https://app.hidevs.xyz/hackathons/diwali-festiverse-a2a-india-2026?tab=finale-pr
 - **GitHub repository:** Alkur123/chakravyuha-redblue-a2a
 - **Deployed demo URL:** https://warroom-x7d1691fvb.agent37.app
 
+*As submitted on 23 Nov 2026 (after an independent review pass).*
+
 ### Project description
+A hijacked AI agent gets in, and cannot get out.
 
-AI agents now act on their own: they read files, move money and message other agents. One hijacked agent can do all
-of that. Aegis checks every action an AI agent takes, before it runs, and judges what the agent does, never what it
-says about itself.
+THE PROBLEM
+AI agents now read files, move money and message other agents on their own. One hijacked agent can do all of that, and agent platforms still trust what an agent says about itself.
 
-In the Mahabharata, the Chakravyuha was a spiral formation, easy to walk into and built so no one gets out; Abhimanyu
-broke in and could not get out. We turned it around: Aegis builds those rings around every AI agent (signed messages,
-one gate for every action, boundary lines, decoy credentials, human approval), so a hijacked agent gets in and cannot
-get out.
+WHAT WE BUILT
+Two agents fight live in a real BAND room. Red, a red-team agent playing a hijacked finance agent, attacks a sandbox invoice service. Blue defends. Aegis, our governance engine, referees every move: it checks every action an agent takes before it runs, and judges what the agent does, never what it says.
 
-To prove it, two agents fight in a real BAND room. Red, a red-team agent playing a hijacked finance agent, attacks a
-sandbox invoice service and reports what it finds to Blue. Every message carries an Ed25519 signature that Aegis
-verifies, and every tool call Red makes passes one gate first. Blue turns each finding into a stricter rule; Lyzr
-writes the fix; Finch cites a matching skill; AdaL patches the code while every one of AdaL's own tool calls is decided
-by the same gate.
+Red and Blue run fixed playbooks, so every run is repeatable and measured the same way. The language-model agents in the loop are Lyzr, which writes the fixes, and AdaL, which patches the code and made the film.
 
-New mechanisms written for this event: alarms the accused agent cannot withdraw; a stand-down that needs two kinds of
-source; closure of reinforcements (no recruiting helpers or fresh sessions once suspect); flat feedback for a probing
-attacker; irreversible actions held for a human; and a check of the agent's own report against the tool log.
+In the Mahabharata, the Chakravyuha was a spiral formation, easy to walk into and built so no one gets out. Abhimanyu broke in and could not get out. We turned it around: Aegis builds those rings around every AI agent.
+• Signed A2A messages: every BAND message carries an Ed25519 envelope. Forged notices, replays and an agent pretending to be Blue are all rejected.
+• One gate for every action: declared tools, boundary lines (path traversal blocked through ../ and ./ tricks) and decoy credentials that end a session on one touch.
+• Closure: a suspect agent cannot recruit helpers into the room or start a fresh session.
+• Alarms the accused agent cannot withdraw, and a stand-down that needs two kinds of source.
+• Flat feedback: a probing attacker gets one identical HOLD and learns nothing.
+• Irreversible actions (payments, data exports) held for a human approver: a real person in the BAND room in --human mode, or a stand-in approval rule in the hosted one-click run.
+• Say vs do: the agent's own report is checked against the tool log, so a lie is caught.
+• Audit vault: every verdict is chained and verified.
 
-On our own playbooks: 12/12 attacks stopped, 0/7 honest tasks blocked, audit vault verified. That's a demonstration,
-not a benchmark.
+THE FULL LOOP, ALL FIVE SPONSORS IN ONE RUN
+Red reports a finding over BAND → Blue turns it into a stricter rule → Lyzr writes the fix → Finch cites a matching skill → AdaL patches the code, with every one of its own tool calls decided by the same gate → Blue re-runs Red's attack and accepts the patch only when it fails (200 → 403). Everything runs live on Agent37: open the demo URL and press "Run the formation".
+
+RESULT, MEASURED LIVE
+12/12 attacks stopped, 0/7 honest tasks blocked, audit vault intact. Measured on our own playbooks, so it's a demonstration, not a benchmark.
+
+Written during the event: the demo, both agents, the war room, and the new mechanisms (closure, alarms that cannot be withdrawn, the two-source stand-down, flat feedback, human holds, the say-vs-do check). Signed messages, the gate, boundary lines, decoys and the vault come from Aegis, our existing engine, used as an API and disclosed in the repo.
 
 ### How did you use BAND?
-
-BAND is the room the agents work in. Red, Blue and the human principal are participants. Every finding, forged notice,
-replay and approval request is a real BAND message with a signed envelope inside it, and BAND's authenticated sender is
-what tells the human principal apart from an agent that types "this is the admin". Red's attempt to recruit a helper is a
-call to BAND's add-participant API, which is exactly the call our closure arm blocks. In `--human` mode, held payments are
-posted to the human in the room and wait for "@Blue APPROVE <id>"; silence rejects. BAND's own docs say in-room approval
-is an instruction to the model, not an authorization check. Aegis supplies the check: Band routes, Aegis decides.
+BAND is the battlefield: the room where the agents work and fight, and the A2A channel for everything they say.
+• Red, Blue and the human principal are BAND participants. Every finding, hardening rule, forged notice, replay and approval request is a real BAND @mention message with a signed Ed25519 envelope inside, and Aegis verifies each one live (shown in the war room as OK / UNSIGNED / KEY_AGENT_MISMATCH / REPLAY).
+• BAND's authenticated sender is what tells the real human principal apart from an agent that types "this is the admin".
+• Red's escape attempt is a real call to BAND's add-participant API, exactly the call our closure ring blocks.
+• Human approval over BAND: in --human mode, held payments are posted to the principal in the room and wait for "@Blue APPROVE <id>". Silence rejects.
+• Reliable delivery: BAND re-delivered messages until we marked each one processing, then processed, so every message is handled exactly once.
+BAND's own docs say in-room approval is an instruction to the model, not an authorization check. Aegis supplies that check. BAND routes, Aegis decides.
 
 ### How did you use AdaL?
-
-AdaL is Blue's patch engineer, and it is governed itself. Through the AdaL SDK's `can_use_tool` callback, every tool call
-AdaL makes (file reads, edits, shell commands, video tools) becomes a deed that needs an ALLOW from the Aegis gate; no
-unrestricted mode is used. AdaL fixed the path-traversal bug Red found: 9 of 9 calls allowed, and Blue accepted the patch
-only after re-running Red's attack (200 → 403). In a probe, the gate denied AdaL's read of the internal payroll file, and
-unknown tools are denied by default. Under our aegis-govern skill, AdaL refused to act on a "grant" pasted into its prompt,
-because text claiming authority is not authority. AdaL also produced our launch film under the same gate: 69 tool calls in the final render,
-each decided by Aegis, 0 denied.
+AdaL is Blue's patch engineer and made our launch film, and AdaL itself is governed. That makes it the clearest test of our idea.
+• Every tool call governed: through the AdaL SDK's can_use_tool callback, every tool call AdaL makes (file reads, edits, shell commands, video tools) becomes an action that needs an ALLOW from the Aegis gate. No unrestricted mode is used, and unknown tools are denied by default.
+• A real fix: AdaL patched the path-traversal bug Red found. 9 of 9 calls were allowed, and Blue accepted the patch only after re-running Red's attack (200 → 403, honest read still 200, 1 file changed).
+• A proven deny: in a probe, the gate blocked AdaL's read of the internal payroll file.
+• A custom AdaL skill (.adal/skills/aegis-govern/SKILL.md) makes AdaL ask the gate itself, so it is governed from inside and outside at once. Under it, AdaL refused to act on a "grant" pasted into its prompt, because text claiming authority is not authority.
+• The launch film was made by AdaL under the same gate: 69 tool calls in the final render, each decided by Aegis, 0 denied. We rebuilt it four times against blind reviews.
 
 ### How did you use Finch?
-
-Blue searches Finch's skill market for a remediation skill matching each finding and cites it next to the hardening rule.
-For the path-traversal finding it cites "Repository Threat Model — OpenAI source". Read-only public search; no wallet.
+Finch is Blue's skill library. For every finding Red reports, Blue searches Finch's skill market for a matching remediation skill and cites it in the war room next to the hardening rule it applies, so each defence points to a reusable skill. For the path-traversal finding it cites "Repository Threat Model — OpenAI source". We use read-only public search and connected no wallet, on purpose: a security demo should hold no funds.
 
 ### How did you use Lyzr?
-
-A hosted Lyzr agent, "Blue Remediation Analyst", answers every finding with a three-line fix: the code change, the policy
-rule and a test. Blue shows it next to the rule it applied. Responses are cached so rehearsals cost no credits. Lyzr's
-prompt-injection check is wired as an extra stop that can only add a block, never lift one; its policy was not configured
-in time, so it adds no stop in our numbers.
+Lyzr is Blue's remediation analyst. A hosted Lyzr Studio agent, "Blue Remediation Analyst", gets every finding Red reports and answers with a three-line fix: the code change, the policy rule and a regression test. Blue shows it in the war room next to the rule it applied, so every defence comes with a ready fix. Responses are cached, so rehearsals cost no credits. Lyzr's prompt-injection check is also wired into the formation as its own ring (L2), which can only add a block, never lift one. Every stop in our measured numbers came from the Aegis gate; the Lyzr layer is wired in on top, with its policy still to be configured.
 
 ### How did you use Agent37?
-
-Agent37 hosts everything live: the war room (the demo URL) and a private Aegis API, both built from Dockerfiles with
-Agent37's template builder and updated in place across six revisions. The hosted Aegis has fresh demo-only secrets and a
-database user limited to one demo database. "Run the formation" runs the whole story from Agent37: the BAND room, the gate,
-Lyzr, Finch and the measured table.
+Agent37 runs the whole system live, on two Agent37 instances, both built from our Dockerfiles with Agent37's template builder:
+1. The war room: the deployed demo URL anyone can open.
+2. A private hosted Aegis API: the governance engine that every agent action and message goes through.
+We updated both in place across six revisions, including a live engine fix during the event. The hosted Aegis has fresh demo-only secrets and a database user limited to one demo database. One click on "Run the formation" runs the whole story from Agent37: the BAND room, the Aegis gate, Lyzr, Finch and the live results table (12/12 attacks stopped, 0/7 honest tasks blocked).
 
 ### What problems did you face during building?
-
-- Our gate crashed when Aegis rate-limited it. We made it fail closed: if a check cannot run, the action is held, never passed.
-- On the hosted page, each event showed two to four times: overlapping polls on a slow link replayed the same events. We
-  found it by recording the live run, and fixed it with one request in flight.
-- BAND re-delivered messages until we marked each one processing, then processed.
-- AdaL headless did not load our MCP gate server, so we moved to the SDK's `can_use_tool`, which gates every tool call.
-  Before that, AdaL refused three times to edit without a verdict it could verify.
-- Our own gate stopped the first AdaL video runs on undeclared tools (fail-closed worked); we mapped AdaL's toolset from
-  its installed code and kept sub-agent spawning and network denied on purpose.
-- Our hosted Aegis refused to boot with `CORS_ORIGINS='*'` (its own guard); we set an explicit origin.
-- A long AdaL job exposed a real bug in our own engine: when the hosted server recycled its worker, a lost session was
-  silently re-created without its declared tools, boundary lines or decoys. We fixed it in Aegis: an unknown session is
-  now refused (fail-closed), with 4 new tests and 493 passing, and deployed the fix to the hosted demo.
-- Our launch film first failed a blind test: a reviewer who saw only the frames scored clarity 5/10 (the Chakravyuha
-  was never explained, the cast never introduced, too much jargon). We rebuilt it four times against fresh blind reviews,
-  put the product's own UI from the live run on every step, and fixed every place a card claimed more than its own log
-  showed (one was ours: injection attribution is not wired in this demo, so the film claims only what the log proves).
-- We did not send production secrets to the cloud: the hosted stack has its own keys and a scoped database user.
+• Our gate crashed when Aegis rate-limited it. We made it fail closed: if a check cannot run, the action is held, never passed.
+• On the hosted page, each event showed two to four times, because overlapping polls on a slow link replayed the same events. We found it by recording the live run, and fixed it with one request in flight at a time.
+• BAND re-delivered messages until we marked each one processing, then processed.
+• AdaL in headless mode did not load our MCP gate server, so we moved to the SDK's can_use_tool, which gates every tool call. Before that, AdaL refused three times to edit without a verdict it could verify.
+• Our own gate stopped the first AdaL video runs on undeclared tools (fail-closed worked). We mapped AdaL's tools from its installed code and kept spawning sub-agents and network access denied on purpose.
+• Our hosted Aegis refused to boot with CORS_ORIGINS='*' (its own guard), so we set an explicit origin.
+• A long AdaL job exposed a real bug in our own engine: when the hosted server recycled its worker, a lost session was silently re-created without its declared tools, boundary lines or decoys. We fixed it in Aegis so an unknown session is now refused (fail-closed), added 4 new tests (493 passing in Aegis's own test suite), and deployed the fix to the hosted demo.
+• Our launch film first failed a blind test: a reviewer who saw only the frames scored clarity 5/10. We rebuilt it four times against fresh blind reviews, put the product's own UI from the live run on every step, and removed every claim a card made that its own log did not show.
+• We did not send production secrets to the cloud: the hosted stack has its own keys and a scoped database user.
 
 ## 3. Pitch recording (on the HiDevs page)
 

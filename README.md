@@ -24,7 +24,7 @@ agent cannot get out to your files, your money or your other agents. Each ring i
 | decoy credentials | planted fake secrets no honest task needs; one touch ends the session |
 | human approval | irreversible actions (payments, exports) wait for an approver (in the automated runs a stand-in rule decides; `--human` puts a real person in the BAND room) |
 
-**The proof: a live fight.** Two AI agents in a real **BAND** chat room:
+**The proof: a live fight.** Two AI agents in a real **BAND** chat room. Red and Blue run fixed playbooks, so every run is repeatable and measured the same way; the language-model agents in the loop are **Lyzr** (writes the fixes) and **AdaL** (patches the code, made the film):
 
 | player | role |
 |---|---|
